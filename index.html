@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Матрицы и операции над ними</title>
+  <!-- Локальный Reveal.js -->
+  <link rel="stylesheet" href="/dist/reveal.css">
+  <link rel="stylesheet" href="/dist/reset.css">
+  <!-- Тема (например, белая) -->
+  <link rel="stylesheet" href="/dist/theme/white.css" id="theme">
+  <!-- Собственный CSS -->
+  <link rel="stylesheet" href="/css/custom.css">
+  <!-- Плагин меню -->
+  <link rel="stylesheet" href="/menu/menu.css">
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- Титульный слайд -->
+      <section>
+        <h1>Матрицы</h1>
+        <h2>Определение, виды, операции, определители и реализация на JavaScript</h2>
+        <p>Нажмите <strong>пробел</strong> или стрелки для навигации</p>
+      </section>
+
+      <!-- Разделитель: Определение матрицы -->
+      <section>
+        <h2>1. Определение матрицы</h2>
+      </section>
+
+      <!-- Слайд: Определение -->
+      <section>
+        <h3>Что такое матрица?</h3>
+        <p><strong>Матрица</strong> — прямоугольная таблица чисел, расположенных в <em>m</em> строках и <em>n</em> столбцах.</p>
+        <p>Обозначение: \( A_{m \times n} = (a_{ij}) \), где \( i \) — номер строки, \( j \) — номер столбца.</p>
+        <p>Пример: \( \begin{pmatrix} 2 & 5 \\ -1 & 0 \\ 3 & 4 \end{pmatrix} \) — матрица 3×2.</p>
+      </section>
+
+      <!-- Разделитель: Виды матриц -->
+      <section>
+        <h2>2. Виды матриц</h2>
+      </section>
+
+      <section>
+        <h3>Квадратная матрица</h3>
+        <p>Число строк равно числу столбцов (\( m = n \)).</p>
+        <p>Пример (порядок 3):</p>
+        <p>\( \begin{pmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{pmatrix} \)</p>
+      </section>
+
+      <section>
+        <h3>Диагональная матрица</h3>
+        <p>Квадратная матрица, у которой все элементы вне главной диагонали равны нулю.</p>
+        <p>\( \begin{pmatrix} 3 & 0 & 0 \\ 0 & -1 & 0 \\ 0 & 0 & 2 \end{pmatrix} \)</p>
+      </section>
+
+      <section>
+        <h3>Единичная матрица</h3>
+        <p>Диагональная матрица, у которой все элементы на главной диагонали равны 1.</p>
+        <p>\( I_3 = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix} \)</p>
+      </section>
+
+      <section>
+        <h3>Нулевая матрица</h3>
+        <p>Все элементы равны нулю.</p>
+        <p>\( \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix} \)</p>
+      </section>
+
+      <section>
+        <h3>Треугольная матрица</h3>
+        <p><strong>Верхняя треугольная:</strong> ненулевые элементы только на главной диагонали и выше.</p>
+        <p>\( \begin{pmatrix} 2 & 7 & 1 \\ 0 & 5 & 3 \\ 0 & 0 & 4 \end{pmatrix} \)</p>
+        <p><strong>Нижняя треугольная:</strong> элементы выше диагонали равны нулю.</p>
+      </section>
+
+      <section>
+        <h3>Транспонированная матрица</h3>
+        <p>Матрица \( A^T \), полученная заменой строк столбцами.</p>
+        <p>Если \( A = \begin{pmatrix} 1 & 2 \\ 3 & 4 \\ 5 & 6 \end{pmatrix} \), то \( A^T = \begin{pmatrix} 1 & 3 & 5 \\ 2 & 4 & 6 \end{pmatrix} \).</p>
+      </section>
+
+      <section>
+        <h3>Симметричная матрица</h3>
+        <p>Квадратная матрица, совпадающая со своей транспонированной: \( A = A^T \).</p>
+        <p>\( \begin{pmatrix} 2 & 1 & 3 \\ 1 & 0 & -2 \\ 3 & -2 & 4 \end{pmatrix} \)</p>
+      </section>
+
+      <!-- Разделитель: Сумма матриц -->
+      <section>
+        <h2>3. Сумма матриц</h2>
+      </section>
+
+      <section>
+        <h3>Алгоритм сложения</h3>
+        <ul>
+          <li>Матрицы должны быть одного размера \( m \times n \).</li>
+          <li>Результирующая матрица \( C = A + B \) определяется поэлементно:<br>
+              \( c_{ij} = a_{ij} + b_{ij} \) для всех \( i, j \).</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Пример сложения</h3>
+        <p>\( A = \begin{pmatrix} 1 & 3 \\ 2 & 0 \end{pmatrix}, \ B = \begin{pmatrix} 2 & -1 \\ 0 & 4 \end{pmatrix} \)</p>
+        <p>\( A + B = \begin{pmatrix} 1+2 & 3+(-1) \\ 2+0 & 0+4 \end{pmatrix} = \begin{pmatrix} 3 & 2 \\ 2 & 4 \end{pmatrix} \)</p>
+      </section>
+
+      <!-- Разделитель: Умножение матриц -->
+      <section>
+        <h2>4. Умножение матриц</h2>
+      </section>
+
+      <section>
+        <h3>Алгоритм умножения</h3>
+        <ul>
+          <li>Матрицы \( A_{m \times n} \) и \( B_{n \times p} \) должны быть совместимы: число столбцов A равно числу строк B.</li>
+          <li>Элемент \( c_{ij} = \sum_{k=1}^{n} a_{ik} \, b_{kj} \).</li>
+          <li>Результат — матрица размера \( m \times p \).</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Пример умножения</h3>
+        <p>\( A = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}, \ B = \begin{pmatrix} 2 & 0 \\ 1 & 2 \end{pmatrix} \)</p>
+        <p>\( A \times B = \begin{pmatrix} 1\cdot2+2\cdot1 & 1\cdot0+2\cdot2 \\ 3\cdot2+4\cdot1 & 3\cdot0+4\cdot2 \end{pmatrix} = \begin{pmatrix} 4 & 4 \\ 10 & 8 \end{pmatrix} \)</p>
+      </section>
+
+      <!-- Разделитель: Определитель -->
+      <section>
+        <h2>5. Определитель матрицы</h2>
+      </section>
+
+      <section>
+        <h3>Определение</h3>
+        <p><strong>Определитель</strong> — число, характеризующее квадратную матрицу. Обозначается \( \det(A) \) или \( |A| \).</p>
+        <p>Для матрицы 2×2: \( \det\begin{pmatrix} a & b \\ c & d \end{pmatrix} = ad - bc \).</p>
+      </section>
+
+      <section>
+        <h3>Определитель 2‑го порядка</h3>
+        <p>\( \det(A) = a_{11}a_{22} - a_{12}a_{21} \)</p>
+        <p>Пример: \( \begin{vmatrix} 3 & 4 \\ 2 & 5 \end{vmatrix} = 3\cdot5 - 4\cdot2 = 7 \)</p>
+      </section>
+
+      <section>
+        <h3>Определитель 3‑го порядка</h3>
+        <p><strong>Правило Саррюса</strong> (или разложение по первой строке).</p>
+        <p>\( \begin{vmatrix} a_{11} & a_{12} & a_{13} \\ a_{21} & a_{22} & a_{23} \\ a_{31} & a_{32} & a_{33} \end{vmatrix} = a_{11}a_{22}a_{33} + a_{12}a_{23}a_{31} + a_{13}a_{21}a_{32} - a_{13}a_{22}a_{31} - a_{11}a_{23}a_{32} - a_{12}a_{21}a_{33} \)</p>
+      </section>
+
+      <section>
+        <h3>Определитель 4‑го порядка</h3>
+        <p>Вычисляется <strong>разложением по строке (столбцу)</strong> через миноры:</p>
+        <p>\( \det(A) = \sum_{j=1}^{n} (-1)^{i+j} a_{ij} M_{ij} \), где \( M_{ij} \) — определитель матрицы, полученной удалением i-й строки и j-го столбца.</p>
+        <p>На практике сводится к рекурсивному вычислению определителей 3‑го порядка.</p>
+      </section>
+
+      <!-- Разделитель: Программы на JS (сложение, умножение) -->
+      <section>
+        <h2>6. Программы на JavaScript: сложение и умножение</h2>
+      </section>
+
+      <section>
+        <h3>Функция сложения матриц</h3>
+        <pre><code class="javascript" data-line-numbers>
+function addMatrices(A, B) {
+  if (A.length !== B.length || A[0].length !== B[0].length) {
+    throw new Error('Матрицы разных размеров');
+  }
+  return A.map((row, i) =>
+    row.map((val, j) => val + B[i][j])
+  );
+}
+        </code></pre>
+      </section>
+
+      <section>
+        <h3>Функция умножения матриц</h3>
+        <pre><script class="javascript" data-line-numbers>
+            function multiplyMatrices(A, B) {
+            if (A[0].length !== B.length) {
+                throw new Error('Число столбцов A ≠ числу строк B');
+            }
+            const m = A.length, n = B[0].length, p = B.length;
+            const result = Array.from({length: m}, () => Array(n).fill(0));
+            for (let i = 0; i < m; i++) {
+                for (let j = 0; j < n; j++) {
+                for (let k = 0; k < p; k++) {
+                    result[i][j] += A[i][k] * B[k][j];
+                }
+                }
+            }
+            return result;
+            }
+        </script></pre>
+      </section>
+
+      <!-- Разделитель: Программы на JS (определитель) -->
+      <section>
+        <h2>7. Программы на JavaScript: определитель</h2>
+      </section>
+
+      <section>
+        <h3>Определитель 2×2</h3>
+        <pre><code class="javascript" data-line-numbers>
+function det2(m) {
+  return m[0][0] * m[1][1] - m[0][1] * m[1][0];
+}
+        </code></pre>
+      </section>
+
+      <section>
+        <h3>Определитель 3×3</h3>
+        <pre><code class="javascript" data-line-numbers>
+function det3(m) {
+  return (
+    m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+    m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+    m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])
+  );
+}
+        </code></pre>
+      </section>
+
+      <section>
+        <h3>Определитель 4×4 (рекурсия)</h3>
+        <pre><code class="javascript" data-line-numbers>
+function det4(matrix) {
+  const n = matrix.length;
+  if (n === 1) return matrix[0][0];
+  if (n === 2) return det2(matrix);
+  let det = 0;
+  for (let j = 0; j < n; j++) {
+    // минор без первой строки и j-го столбца
+    const minor = matrix.slice(1).map(row =>
+      row.filter((_, idx) => idx !== j)
+    );
+    det += (j % 2 === 0 ? 1 : -1) * matrix[0][j] * det4(minor);
+  }
+  return det;
+}
+        </code></pre>
+        <p>Работает для любого порядка (в т.ч. 4×4).</p>
+      </section>
+
+      <!-- Разделитель: Исходный код -->
+      <section>
+        <h2>8. Исходный код программ</h2>
+      </section>
+
+      <section>
+        <h3>Код операций с матрицами (фрагмент)</h3>
+        <p>Функции <code>addMatrices</code> и <code>multiplyMatrices</code> показаны ранее.</p>
+        <p>Полный код доступен в репозитории проекта.</p>
+      </section>
+
+      <section>
+        <h3>Код определителя (фрагмент)</h3>
+        <p>Функции <code>det2</code>, <code>det3</code>, <code>det4</code> реализованы без внешних библиотек.</p>
+      </section>
+
+      <!-- Разделитель: Весёлые картинки -->
+      <section>
+        <h2>9. Весёлые картинки по теме</h2>
+      </section>
+
+      <section>
+        <h3>Мем 1: «Матрица уже не та»</h3>
+        <img src="images/meme1.jpg" alt="Матричный мем 1" style="max-height: 500px;">
+      </section>
+
+      <section>
+        <h3>Мем 2: «Когда перемножил матрицы вручную»</h3>
+        <img src="images/meme2.jpg" alt="Матричный мем 2" style="max-height: 500px;">
+      </section>
+
+      <section>
+        <h3>Мем 3: «Определитель равен нулю»</h3>
+        <img src="images/meme3.jpg" alt="Матричный мем 3" style="max-height: 500px;">
+      </section>
+
+      <!-- Заключительный слайд -->
+      <section>
+        <h2>Спасибо за внимание!</h2>
+        <p>Матрицы — это просто!</p>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Подключение Reveal.js и плагинов -->
+  <script type="module">
+    import Reveal from '/dist/reveal.esm.js';
+    import RevealMenu from '/menu/menu.esm.js';
+
+    Reveal.initialize({
+      // Настройки навигации
+      slideNumber: true,           // показывать номер слайда
+      progress: true,
+      overview: true,
+      keyboard: true,
+      navigationMode: 'linear',
+
+      // Подключение плагина меню
+      plugins: [ RevealMenu ],
+
+      // Настройки меню
+      menu: {
+        side: 'left',             // меню слева
+        width: 'normal',
+        numbers: true,
+        titleSelector: 'h1, h2, h3, h4, h5, h6',
+        useTextContentForMissingTitles: true,
+        hideMissingTitles: false,
+        markers: true,
+        custom: false,
+        themes: false,
+        transitions: false,
+        openButton: true,
+        openSlideNumber: false,
+        keyboard: true
+      }
+    });
+  </script>
+</body>
+</html>
