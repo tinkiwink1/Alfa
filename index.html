@@ -3,141 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Матрицы и операции над ними</title>
+  <title>Матрицы</title>
   <!-- Локальный Reveal.js -->
-  <link rel="stylesheet" href="/dist/reveal.css">
-  <link rel="stylesheet" href="/dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="dist/reset.css">
   <!-- Тема (например, белая) -->
-  <link rel="stylesheet" href="/dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="dist/theme/white.css" id="theme">
   <!-- Собственный CSS -->
-  <link rel="stylesheet" href="/css/custom.css">
-  <!-- Плагин меню -->
-  <link rel="stylesheet" href="/menu/menu.css">
+  <link rel="stylesheet" href="plugin/css/custom.css">
+  <link rel="stylesheet" href="plugin/katex/lib/katex.min.css">
+    <style>
+        #rorPage {
+            font-size: 80%;
+        }
+    </style>
 
 </head>
 <body>
+
   <div class="reveal">
     <div class="slides">
-
-      <!-- Титульный слайд -->
-      <section>
-        <h1>Матрицы</h1>
-        <h2>Определение, виды, операции, определители и реализация на JavaScript</h2>
-        <p>Нажмите <strong>пробел</strong> или стрелки для навигации</p>
-      </section>
-
-      <!-- Разделитель: Определение матрицы -->
-      <section>
-        <h2>1. Определение матрицы</h2>
-      </section>
-
-      <!-- Слайд: Определение -->
-      <section>
-        <h3>Что такое матрица?</h3>
-        <p><strong>Матрица</strong> — прямоугольная таблица чисел, расположенных в <em>m</em> строках и <em>n</em> столбцах.</p>
-        <p>Обозначение: \( A_{m \times n} = (a_{ij}) \), где \( i \) — номер строки, \( j \) — номер столбца.</p>
-        <p>Пример: \( \begin{pmatrix} 2 & 5 \\ -1 & 0 \\ 3 & 4 \end{pmatrix} \) — матрица 3×2.</p>
-      </section>
-
-      <!-- Разделитель: Виды матриц -->
-      <section>
-        <h2>2. Виды матриц</h2>
-      </section>
-
-      <section>
-        <h3>Квадратная матрица</h3>
-        <p>Число строк равно числу столбцов (\( m = n \)).</p>
-        <p>Пример (порядок 3):</p>
-        <p>\( \begin{pmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{pmatrix} \)</p>
-      </section>
-
-      <section>
-        <h3>Диагональная матрица</h3>
-        <p>Квадратная матрица, у которой все элементы вне главной диагонали равны нулю.</p>
-        <p>\( \begin{pmatrix} 3 & 0 & 0 \\ 0 & -1 & 0 \\ 0 & 0 & 2 \end{pmatrix} \)</p>
-      </section>
-
-      <section>
-        <h3>Единичная матрица</h3>
-        <p>Диагональная матрица, у которой все элементы на главной диагонали равны 1.</p>
-        <p>\( I_3 = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix} \)</p>
-      </section>
-
-      <section>
-        <h3>Нулевая матрица</h3>
-        <p>Все элементы равны нулю.</p>
-        <p>\( \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix} \)</p>
-      </section>
-
-      <section>
-        <h3>Треугольная матрица</h3>
-        <p><strong>Верхняя треугольная:</strong> ненулевые элементы только на главной диагонали и выше.</p>
-        <p>\( \begin{pmatrix} 2 & 7 & 1 \\ 0 & 5 & 3 \\ 0 & 0 & 4 \end{pmatrix} \)</p>
-        <p><strong>Нижняя треугольная:</strong> элементы выше диагонали равны нулю.</p>
-      </section>
-
-      <section>
-        <h3>Транспонированная матрица</h3>
-        <p>Матрица \( A^T \), полученная заменой строк столбцами.</p>
-        <p>Если \( A = \begin{pmatrix} 1 & 2 \\ 3 & 4 \\ 5 & 6 \end{pmatrix} \), то \( A^T = \begin{pmatrix} 1 & 3 & 5 \\ 2 & 4 & 6 \end{pmatrix} \).</p>
-      </section>
-
-      <section>
-        <h3>Симметричная матрица</h3>
-        <p>Квадратная матрица, совпадающая со своей транспонированной: \( A = A^T \).</p>
-        <p>\( \begin{pmatrix} 2 & 1 & 3 \\ 1 & 0 & -2 \\ 3 & -2 & 4 \end{pmatrix} \)</p>
-      </section>
-
-      <!-- Разделитель: Сумма матриц -->
-      <section>
-        <h2>3. Сумма матриц</h2>
-      </section>
-
-      <section>
-        <h3>Алгоритм сложения</h3>
-        <ul>
-          <li>Матрицы должны быть одного размера \( m \times n \).</li>
-          <li>Результирующая матрица \( C = A + B \) определяется поэлементно:<br>
-              \( c_{ij} = a_{ij} + b_{ij} \) для всех \( i, j \).</li>
-        </ul>
-      </section>
-
-      <section>
-        <h3>Пример сложения</h3>
-        <p>\( A = \begin{pmatrix} 1 & 3 \\ 2 & 0 \end{pmatrix}, \ B = \begin{pmatrix} 2 & -1 \\ 0 & 4 \end{pmatrix} \)</p>
-        <p>\( A + B = \begin{pmatrix} 1+2 & 3+(-1) \\ 2+0 & 0+4 \end{pmatrix} = \begin{pmatrix} 3 & 2 \\ 2 & 4 \end{pmatrix} \)</p>
-      </section>
-
-      <!-- Разделитель: Умножение матриц -->
-      <section>
-        <h2>4. Умножение матриц</h2>
-      </section>
-
-      <section>
-        <h3>Алгоритм умножения</h3>
-        <ul>
-          <li>Матрицы \( A_{m \times n} \) и \( B_{n \times p} \) должны быть совместимы: число столбцов A равно числу строк B.</li>
-          <li>Элемент \( c_{ij} = \sum_{k=1}^{n} a_{ik} \, b_{kj} \).</li>
-          <li>Результат — матрица размера \( m \times p \).</li>
-        </ul>
-      </section>
-
-      <section>
-        <h3>Пример умножения</h3>
-        <p>\( A = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}, \ B = \begin{pmatrix} 2 & 0 \\ 1 & 2 \end{pmatrix} \)</p>
-        <p>\( A \times B = \begin{pmatrix} 1\cdot2+2\cdot1 & 1\cdot0+2\cdot2 \\ 3\cdot2+4\cdot1 & 3\cdot0+4\cdot2 \end{pmatrix} = \begin{pmatrix} 4 & 4 \\ 10 & 8 \end{pmatrix} \)</p>
-      </section>
-
-      <!-- Разделитель: Определитель -->
-      <section>
-        <h2>5. Определитель матрицы</h2>
-      </section>
-
-      <section>
-        <h3>Определение</h3>
-        <p><strong>Определитель</strong> — число, характеризующее квадратную матрицу. Обозначается \( \det(A) \) или \( |A| \).</p>
-        <p>Для матрицы 2×2: \( \det\begin{pmatrix} a & b \\ c & d \end{pmatrix} = ad - bc \).</p>
-      </section>
+      <section data-markdown="./markdown/matrix.md"></section>
+      <section data-markdown="./markdown/titul_attribute_matrix.md"></section>
+      <section data-markdown="./markdown/attribute_matrix.md"></section>
+      <section data-markdown="./markdown/types_matrix.md"></section>
+      <section data-markdown="./markdown/square_matrix.md"></section>
+      <section data-markdown="./markdown/diagonal_matrix.md"></section>
+      <section data-markdown="./markdown/ones_matrix.md"></section>
+      <section data-markdown="./markdown/zeros_matrix.md"></section>
+      <section data-markdown="./markdown/tregular_matrix.md"></section>
+      <section data-markdown="./markdown/transpose_matrix.md"></section>
+      <section data-markdown="./markdown/symmetric_matrix.md"></section>
+      <section data-markdown="./markdown/sum_matrix.md"></section>
+      <section data-markdown="./markdown/algorithm_sum_matrix.md"></section>
+      <section data-markdown="./markdown/multiply_matrix.md"></section>
+      <section data-markdown="./markdown/algorithm_multiply_matrix.md"></section>
+      <section data-markdown="./markdown/example_multiply_matrix.md"></section>
+      <section data-markdown="./markdown/determinate_matrix.md"></section>
+      <section data-markdown="./markdown/attribute_determinate_matrix.md"></section>
 
       <section>
         <h3>Определитель 2‑го порядка</h3>
@@ -291,39 +194,39 @@ function det4(matrix) {
     </div>
   </div>
 
-  <!-- Подключение Reveal.js и плагинов -->
-  <script type="module">
-    import Reveal from '/dist/reveal.esm.js';
-    import RevealMenu from '/menu/menu.esm.js';
+  <script src="plugin/markdown/markdown.js"></script>
+  <script src="dist/reveal.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/notes/notes.js"></script>
 
-    Reveal.initialize({
-      // Настройки навигации
-      slideNumber: true,           // показывать номер слайда
-      progress: true,
-      overview: true,
-      keyboard: true,
-      navigationMode: 'linear',
 
-      // Подключение плагина меню
-      plugins: [ RevealMenu ],
-
-      // Настройки меню
-      menu: {
-        side: 'left',             // меню слева
-        width: 'normal',
-        numbers: true,
-        titleSelector: 'h1, h2, h3, h4, h5, h6',
-        useTextContentForMissingTitles: true,
-        hideMissingTitles: false,
-        markers: true,
-        custom: false,
-        themes: false,
-        transitions: false,
-        openButton: true,
-        openSlideNumber: false,
-        keyboard: true
-      }
-    });
-  </script>
+  <script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+				controls: true,
+				center: false,
+				dependencies: [{
+					src: 'plugin/katex/katex.js',
+					async: true,
+				},{
+					src: 'plugin/fullscreen/fullscreen.js',
+				},{
+					src: 'plugin/menu/menu.js',
+				}],
+				menu: {
+					numbers: true,
+					markers: true,
+          transitions: true,
+          titleSelector: 'h1, h2, h3, h4, h5, h6'
+				},
+      
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes]
+			});
+		</script>
 </body>
 </html>
