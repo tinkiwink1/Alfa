@@ -1,3 +1,3 @@
 ### Транспонированная матрица
 Матрица \\( A^T \\), полученная заменой строк столбцами.
-Если \\( A = \begin{pmatrix} 1 & 2 \\ 3 & 4 \\ 5 & 6 \end{pmatrix} \), то \( A^T = \begin{pmatrix} 1 & 3 & 5 \\ 2 & 4 & 6 \end{pmatrix} \\).
+Если \\( A = \begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \end{pmatrix} \\), то \\( A^T = \begin{pmatrix} 1 & 3 & 5 \\\\ 2 & 4 & 6 \end{pmatrix} \\).

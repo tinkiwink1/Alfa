@@ -12,9 +12,14 @@
   <!-- Собственный CSS -->
   <link rel="stylesheet" href="plugin/css/custom.css">
   <link rel="stylesheet" href="plugin/katex/lib/katex.min.css">
+
     <style>
         #rorPage {
             font-size: 80%;
+          
+        }
+        .matrix_input {
+            height: 100px;
         }
     </style>
 
@@ -36,9 +41,197 @@
       <section data-markdown="./markdown/symmetric_matrix.md"></section>
       <section data-markdown="./markdown/sum_matrix.md"></section>
       <section data-markdown="./markdown/algorithm_sum_matrix.md"></section>
+      <section>
+          <h3>Пример сложения матриц</h3>
+        
+          <textarea id="matrixA_add" rows="4" cols="35" placeholder="Пример:&#10;1 2 3&#10;4 5 6"></textarea>
+          <br>
+          +
+          <br>
+          <textarea id="matrixB_add" rows="4" cols="35" placeholder="Пример:&#10;7 8 9&#10;10 11 12"></textarea>
+          <br>
+          <button onclick="addMatricesFromInput()">Сложить матрицы</button>
+          
+          <h4>Результат (A + B):</h4>
+          <pre id="resultOutput_add" style="background:#f0f0f0; padding:10px; border-radius:5px;">(пока пусто)</pre>
+          
+          <script>
+              // Функция для преобразования текста в матрицу чисел (та же, что и раньше)
+              function parseMatrixFromText(text) {
+                  const lines = text.trim().split(/\r?\n/).filter(line => line.trim() !== '');
+                  const matrix = [];
+                  for (let line of lines) {
+                      const parts = line.trim().split(/[ ,;]+/);
+                      const row = [];
+                      for (let part of parts) {
+                          let num = parseFloat(part);
+                          if (isNaN(num)) {
+                              throw new Error(`Некорректное число: "${part}" в строке "${line}"`);
+                          }
+                          row.push(num);
+                      }
+                      if (row.length === 0) continue;
+                      matrix.push(row);
+                  }
+                  if (matrix.length === 0) throw new Error("Матрица не содержит строк");
+                  return matrix;
+              }
+              
+              // Функция сложения двух матриц
+              function addMatrices(A, B) {
+                  const rowsA = A.length;
+                  const colsA = A[0].length;
+                  const rowsB = B.length;
+                  const colsB = B[0].length;
+                  
+                  // Проверка размеров: должны совпадать
+                  if (rowsA !== rowsB || colsA !== colsB) {
+                      throw new Error(`Размеры матриц не совпадают: A (${rowsA}×${colsA}) ≠ B (${rowsB}×${colsB})`);
+                  }
+                  
+                  // Дополнительно проверяем, что все строки имеют одинаковую длину
+                  for (let i = 0; i < rowsA; i++) {
+                      if (A[i].length !== colsA) throw new Error(`Строка ${i+1} матрицы A имеет разное количество элементов`);
+                  }
+                  for (let i = 0; i < rowsB; i++) {
+                      if (B[i].length !== colsB) throw new Error(`Строка ${i+1} матрицы B имеет разное количество элементов`);
+                  }
+                  
+                  // Поэлементное сложение
+                  const result = Array(rowsA).fill().map(() => Array(colsA).fill(0));
+                  for (let i = 0; i < rowsA; i++) {
+                      for (let j = 0; j < colsA; j++) {
+                          result[i][j] = A[i][j] + B[i][j];
+                      }
+                  }
+                  return result;
+              }
+              
+              // Форматирование матрицы для вывода
+              function formatMatrix(matrix) {
+                  return matrix.map(row => row.join('\t')).join('\n');
+              }
+              
+              // Главная функция, вызываемая по нажатию кнопки
+              function addMatricesFromInput() {
+                  const textA = document.getElementById('matrixA_add').value;
+                  const textB = document.getElementById('matrixB_add').value;
+                  const outputPre = document.getElementById('resultOutput_add');
+                  
+                  try {
+                      if (!textA.trim() || !textB.trim()) {
+                          throw new Error("Обе матрицы должны быть заполнены");
+                      }
+                      const A = parseMatrixFromText(textA);
+                      const B = parseMatrixFromText(textB);
+                      
+                      const C = addMatrices(A, B);
+                      
+                      outputPre.textContent = formatMatrix(C);
+                      outputPre.style.color = "green";
+                  } catch (error) {
+                      outputPre.textContent = "Ошибка: " + error.message;
+                      outputPre.style.color = "red";
+                  }
+              }
+          </script>
+      </section>
       <section data-markdown="./markdown/multiply_matrix.md"></section>
       <section data-markdown="./markdown/algorithm_multiply_matrix.md"></section>
-      <section data-markdown="./markdown/example_multiply_matrix.md"></section>
+      <section>
+        <h3>Пример нахождения матрицы произведения</h3>
+        <textarea  id="matrixA" class="matrix_input" row="5" cols="30" placeholder="Пример:&#10;1 2 3&#10;4 5 6&#10;7 8 9"></textarea>
+        X
+        <textarea  id="matrixB" class="matrix_input" row="5" cols="30" placeholder="Пример:&#10;1 2 3&#10;4 5 6&#10;7 8 9"></textarea>
+        <br/>
+        <button onclick="multiplyMatricesFromInput()">Перемножить</button>
+        <h4>Результат (A x B):</h4>
+        <pre id="resultOutput" style="background:#f0f0f0; padding:10px; border-radius:5px;"></pre>
+        <script>
+        // Функция для преобразования текста в матрицу чисел
+        function parseMatrixFromText(text) {
+            const lines = text.trim().split(/\r?\n/).filter(line => line.trim() !== '');
+            const matrix = [];
+            for (let line of lines) {
+                const parts = line.trim().split(/[ ,;]+/);
+                const row = [];
+                for (let part of parts) {
+                    let num = parseFloat(part);
+                    if (isNaN(num)) {
+                        throw new Error(`Некорректное число: "${part}" в строке "${line}"`);
+                    }
+                    row.push(num);
+                }
+                if (row.length === 0) continue;
+                matrix.push(row);
+            }
+            if (matrix.length === 0) throw new Error("Матрица не содержит строк");
+            return matrix;
+        }
+        
+        // Функция умножения матриц
+        function multiplyMatrices(A, B) {
+            const rowsA = A.length;
+            const colsA = A[0].length;
+            const rowsB = B.length;
+            const colsB = B[0].length;
+            
+            if (colsA !== rowsB) {
+                throw new Error(`Невозможно умножить: число столбцов A (${colsA}) не равно числу строк B (${rowsB})`);
+            }
+            
+            // Проверяем, что все строки матриц имеют одинаковую длину
+            for (let i = 0; i < rowsA; i++) {
+                if (A[i].length !== colsA) throw new Error(`Строка ${i+1} матрицы A имеет разное количество элементов`);
+            }
+            for (let i = 0; i < rowsB; i++) {
+                if (B[i].length !== colsB) throw new Error(`Строка ${i+1} матрицы B имеет разное количество элементов`);
+            }
+            
+            const result = Array(rowsA).fill().map(() => Array(colsB).fill(0));
+            for (let i = 0; i < rowsA; i++) {
+                for (let j = 0; j < colsB; j++) {
+                    let sum = 0;
+                    for (let k = 0; k < colsA; k++) {
+                        sum += A[i][k] * B[k][j];
+                    }
+                    result[i][j] = sum;
+                }
+            }
+            return result;
+        }
+        
+        // Форматирование матрицы для вывода (красивый вид)
+        function formatMatrix(matrix) {
+            return matrix.map(row => row.join('\t')).join('\n');
+        }
+        
+        // Главная функция, вызываемая по нажатию кнопки
+        function multiplyMatricesFromInput() {
+            const textA = document.getElementById('matrixA').value;
+            const textB = document.getElementById('matrixB').value;
+            const outputPre = document.getElementById('resultOutput');
+            
+            try {
+                if (!textA.trim() || !textB.trim()) {
+                    throw new Error("Обе матрицы должны быть заполнены");
+                }
+                const A = parseMatrixFromText(textA);
+                const B = parseMatrixFromText(textB);
+                
+                const C = multiplyMatrices(A, B);
+                
+                outputPre.textContent = formatMatrix(C);
+                outputPre.style.color = "green";
+            } catch (error) {
+                outputPre.textContent = "Ошибка: " + error.message;
+                outputPre.style.color = "red";
+            }
+        }
+    </script>
+      </section>
+
+
       <section data-markdown="./markdown/determinate_matrix.md"></section>
       <section data-markdown="./markdown/attribute_determinate_matrix.md"></section>
 
@@ -63,47 +256,47 @@
 
       <!-- Разделитель: Программы на JS (сложение, умножение) -->
       <section>
-        <h2>6. Программы на JavaScript: сложение и умножение</h2>
+        <h2>Программы на JavaScript: сложение и умножение</h2>
       </section>
 
       <section>
         <h3>Функция сложения матриц</h3>
         <pre><code class="javascript" data-line-numbers>
-function addMatrices(A, B) {
-  if (A.length !== B.length || A[0].length !== B[0].length) {
-    throw new Error('Матрицы разных размеров');
+  function addMatrices(A, B) {
+    if (A.length !== B.length || A[0].length !== B[0].length) {
+      throw new Error('Матрицы разных размеров');
+    }
+    return A.map((row, i) =>
+      row.map((val, j) => val + B[i][j])
+    );
   }
-  return A.map((row, i) =>
-    row.map((val, j) => val + B[i][j])
-  );
-}
         </code></pre>
       </section>
 
       <section>
         <h3>Функция умножения матриц</h3>
-        <pre><script class="javascript" data-line-numbers>
-            function multiplyMatrices(A, B) {
-            if (A[0].length !== B.length) {
-                throw new Error('Число столбцов A ≠ числу строк B');
-            }
-            const m = A.length, n = B[0].length, p = B.length;
-            const result = Array.from({length: m}, () => Array(n).fill(0));
-            for (let i = 0; i < m; i++) {
-                for (let j = 0; j < n; j++) {
-                for (let k = 0; k < p; k++) {
-                    result[i][j] += A[i][k] * B[k][j];
-                }
-                }
-            }
-            return result;
-            }
-        </script></pre>
+        <pre><code class="javascript" data-line-numbers>
+    function multiplyMatrices(A, B) {
+    if (A[0].length !== B.length) {
+        throw new Error('Число столбцов A ≠ числу строк B');
+    }
+    const m = A.length, n = B[0].length, p = B.length;
+    const result = Array.from({length: m}, () => Array(n).fill(0));
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+        for (let k = 0; k < p; k++) {
+            result[i][j] += A[i][k] * B[k][j];
+        }
+        }
+    }
+    return result;
+    }
+          </code></pre>
       </section>
 
       <!-- Разделитель: Программы на JS (определитель) -->
       <section>
-        <h2>7. Программы на JavaScript: определитель</h2>
+        <h2>Программы на JavaScript: определитель</h2>
       </section>
 
       <section>
@@ -149,46 +342,17 @@ function det4(matrix) {
         <p>Работает для любого порядка (в т.ч. 4×4).</p>
       </section>
 
-      <!-- Разделитель: Исходный код -->
       <section>
-        <h2>8. Исходный код программ</h2>
+        <h2>Весёлые картинки по теме</h2>
       </section>
 
-      <section>
-        <h3>Код операций с матрицами (фрагмент)</h3>
-        <p>Функции <code>addMatrices</code> и <code>multiplyMatrices</code> показаны ранее.</p>
-        <p>Полный код доступен в репозитории проекта.</p>
-      </section>
-
-      <section>
-        <h3>Код определителя (фрагмент)</h3>
-        <p>Функции <code>det2</code>, <code>det3</code>, <code>det4</code> реализованы без внешних библиотек.</p>
-      </section>
-
-      <!-- Разделитель: Весёлые картинки -->
-      <section>
-        <h2>9. Весёлые картинки по теме</h2>
-      </section>
-
-      <section>
-        <h3>Мем 1: «Матрица уже не та»</h3>
-        <img src="images/meme1.jpg" alt="Матричный мем 1" style="max-height: 500px;">
-      </section>
-
-      <section>
-        <h3>Мем 2: «Когда перемножил матрицы вручную»</h3>
-        <img src="images/meme2.jpg" alt="Матричный мем 2" style="max-height: 500px;">
-      </section>
-
-      <section>
-        <h3>Мем 3: «Определитель равен нулю»</h3>
-        <img src="images/meme3.jpg" alt="Матричный мем 3" style="max-height: 500px;">
-      </section>
+      <section data-markdown="./markdown/meme1.md"></section>
+      <section data-markdown="./markdown/meme2.md"></section>
+      <section data-markdown="./markdown/meme3.md"></section>
 
       <!-- Заключительный слайд -->
       <section>
         <h2>Спасибо за внимание!</h2>
-        <p>Матрицы — это просто!</p>
       </section>
 
     </div>
