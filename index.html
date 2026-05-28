@@ -53,7 +53,7 @@
           <button onclick="addMatricesFromInput()">Сложить матрицы</button>
           
           <h4>Результат (A + B):</h4>
-          <pre id="resultOutput_add" style="background:#f0f0f0; padding:10px; border-radius:5px;">(пока пусто)</pre>
+          <pre id="resultOutput_add" style="background:#f0f0f0; padding:10px; border-radius:5px;"></pre>
           
           <script>
               // Функция для преобразования текста в матрицу чисел (та же, что и раньше)
@@ -232,28 +232,118 @@
       </section>
 
 
-      <section data-markdown="./markdown/determinate_matrix.md"></section>
-      <section data-markdown="./markdown/attribute_determinate_matrix.md"></section>
+        <section data-markdown="./markdown/determinate_matrix.md"></section>
+        <section data-markdown="./markdown/attribute_determinate_matrix.md"></section>
 
-      <section>
-        <h3>Определитель 2‑го порядка</h3>
-        <p>\( \det(A) = a_{11}a_{22} - a_{12}a_{21} \)</p>
-        <p>Пример: \( \begin{vmatrix} 3 & 4 \\ 2 & 5 \end{vmatrix} = 3\cdot5 - 4\cdot2 = 7 \)</p>
+        <section data-markdown="./markdown/det2.md"></section>
+
+        <section data-markdown="./markdown/det3.md"></section>
+
+        <section data-markdown="./markdown/det4.md"></section>
+        <section>
+          <!-- Блок для матрицы 2×2 -->
+      <div class="det-block">
+          <h4>Матрица 2×2</h4>
+          <textarea id="mat2" rows="2" placeholder="Пример:&#10;1 2&#10;3 4"></textarea>
+          <button onclick="computeDet(2)">Вычислить определитель</button>
+          <div class="det-result" id="det2res">= ?</div>
+      </div>
+
+      <!-- Блок для матрицы 3×3 -->
+      <div class="det-block">
+          <h4>Матрица 3×3</h4>
+          <textarea id="mat3" rows="3" placeholder="Пример:&#10;1 2 3&#10;4 5 6&#10;7 8 9"></textarea>
+          <button onclick="computeDet(3)">Вычислить определитель</button>
+          <div class="det-result" id="det3res">= ?</div>
+      </div>
+
+      <!-- Блок для матрицы 4×4 -->
+      <div class="det-block">
+          <h4>Матрица 4×4</h4>
+          <textarea id="mat4" rows="4" placeholder="Пример:&#10;1 0 0 0&#10;0 1 0 0&#10;0 0 1 0&#10;0 0 0 1"></textarea>
+          <button onclick="computeDet(4)">Вычислить определитель</button>
+          <div class="det-result" id="det4res">= ?</div>
+      </div>
+
+      <script>
+          // Универсальный парсер текста в матрицу чисел
+          function parseMatrix(text, expectedSize) {
+              const lines = text.trim().split(/\r?\n/).filter(l => l.trim() !== '');
+              const matrix = [];
+              for (let i = 0; i < lines.length; i++) {
+                  // Разделители: пробелы, запятые, точки с запятой
+                  const parts = lines[i].trim().split(/[ ,;]+/);
+                  const row = [];
+                  for (let part of parts) {
+                      let num = parseFloat(part);
+                      if (isNaN(num)) throw new Error(`Не число: "${part}" в строке ${i+1}`);
+                      row.push(num);
+                  }
+                  if (row.length === 0) continue;
+                  matrix.push(row);
+              }
+              if (matrix.length !== expectedSize) {
+                  throw new Error(`Ожидается ${expectedSize} строк, получено ${matrix.length}`);
+              }
+              for (let i = 0; i < matrix.length; i++) {
+                  if (matrix[i].length !== expectedSize) {
+                      throw new Error(`Строка ${i+1} содержит ${matrix[i].length} элементов, ожидается ${expectedSize}`);
+                  }
+              }
+              return matrix;
+          }
+
+          // Определитель через рекурсию (работает для 2,3,4)
+          function determinant(matrix) {
+              const n = matrix.length;
+              if (n === 1) return matrix[0][0];
+              if (n === 2) return matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0];
+              let det = 0;
+              for (let col = 0; col < n; col++) {
+                  const minor = matrix.slice(1).map(row => row.filter((_, j) => j !== col));
+                  const sign = col % 2 === 0 ? 1 : -1;
+                  det += sign * matrix[0][col] * determinant(minor);
+              }
+              return det;
+          }
+
+          // Основная функция, вызываемая из кнопок
+          function computeDet(order) {
+              let textareaId, resultId;
+              if (order === 2) { textareaId = 'mat2'; resultId = 'det2res'; }
+              else if (order === 3) { textareaId = 'mat3'; resultId = 'det3res'; }
+              else { textareaId = 'mat4'; resultId = 'det4res'; }
+
+              const text = document.getElementById(textareaId).value;
+              const resultDiv = document.getElementById(resultId);
+
+              try {
+                  if (!text.trim()) throw new Error('Введите матрицу');
+                  const matrix = parseMatrix(text, order);
+                  const det = determinant(matrix);
+                  // Округление для красоты
+                  const rounded = Math.abs(det) < 1e-10 ? 0 : det;
+                  resultDiv.innerHTML = `= ${rounded}`;
+                  resultDiv.style.color = 'darkgreen';
+              } catch (err) {
+                  resultDiv.innerHTML = `❌ ${err.message}`;
+                  resultDiv.style.color = 'red';
+              }
+          }
+
+          // Инициализация примерами (чтобы не было пусто)
+          window.onload = () => {
+              document.getElementById('mat2').value = '1 2\n3 4';
+              document.getElementById('mat3').value = '1 2 3\n4 5 6\n7 8 9';
+              document.getElementById('mat4').value = '1 0 0 0\n0 1 0 0\n0 0 1 0\n0 0 0 1';
+              // Вычислим начальные значения
+              computeDet(2);
+              computeDet(3);
+              computeDet(4);
+          };
+      </script>
+
       </section>
-
-      <section>
-        <h3>Определитель 3‑го порядка</h3>
-        <p><strong>Правило Саррюса</strong> (или разложение по первой строке).</p>
-        <p>\( \begin{vmatrix} a_{11} & a_{12} & a_{13} \\ a_{21} & a_{22} & a_{23} \\ a_{31} & a_{32} & a_{33} \end{vmatrix} = a_{11}a_{22}a_{33} + a_{12}a_{23}a_{31} + a_{13}a_{21}a_{32} - a_{13}a_{22}a_{31} - a_{11}a_{23}a_{32} - a_{12}a_{21}a_{33} \)</p>
-      </section>
-
-      <section>
-        <h3>Определитель 4‑го порядка</h3>
-        <p>Вычисляется <strong>разложением по строке (столбцу)</strong> через миноры:</p>
-        <p>\( \det(A) = \sum_{j=1}^{n} (-1)^{i+j} a_{ij} M_{ij} \), где \( M_{ij} \) — определитель матрицы, полученной удалением i-й строки и j-го столбца.</p>
-        <p>На практике сводится к рекурсивному вычислению определителей 3‑го порядка.</p>
-      </section>
-
       <!-- Разделитель: Программы на JS (сложение, умножение) -->
       <section>
         <h2>Программы на JavaScript: сложение и умножение</h2>
